@@ -3,12 +3,18 @@ from django.conf.urls.static import static
 from django.urls import path
 from .views import (
     index,
-    login
+    login_view,
+    signup_view,
+    settings_view,
+    log_training,
 )
 
 urlpatterns = [
     path('', index, name='index'),
-    path('login/', login, name="login"),
+    path('login/', login_view, name="login"),
+    path('signup/', signup_view, name="signup"),
+    path('settings/', settings_view, name="settings"),
+    path('log_training/', log_training, name='log_training'),
 ]
 
 if settings.DEBUG:

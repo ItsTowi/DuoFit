@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- ... (cabeza de la página) -->
+</head>
+<body>
+    <h2>Página Principal de Duofit</h2>
+    <p>Llevas {{ today_completed_trainings }}/{{ exercice_config.weekly_goal }} entrenamientos hoy.</p>
+
+    <form method="post" action="{% url 'log_training' %}">
+        {% csrf_token %}
+        <button type="submit">He completado un entrenamiento</button>
+    </form>
+</body>
+</html>
