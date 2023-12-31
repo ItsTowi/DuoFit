@@ -1,4 +1,5 @@
 from datetime import datetime
+import os
 
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -34,7 +35,7 @@ def index(request):
         'weekly_completed_trainings': exercice_config.get_weekly_trainings(),
     })
 
-    
+
 def login_view(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, request.POST)
@@ -108,7 +109,7 @@ def log_training(request):
             exercice_config_instance.add_streak()
 
             # Call the Notion API function
-            #notion_api_integration(new_training)
+            notion_api_integration(new_training)
 
         return redirect('index')  # Redirige de nuevo a la página principal
 
@@ -132,6 +133,7 @@ def refresh_streak(user_id):
 
 def notion_api_integration(new_training):
     # Your Notion API integration
+    #notion_integration_token = os.environ.get('NOTION_INTEGRATION_TOKEN')
     notion_integration_token = 'secret_mpETsJupCH7hksg6Iq5i0IiRAhEWchet26eB36ypqmK'
     headers = {
         'Authorization': f'Bearer {notion_integration_token}',

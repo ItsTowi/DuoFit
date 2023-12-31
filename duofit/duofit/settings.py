@@ -24,9 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-dqh(o+!^_!a9cf3h&1etzik!2k$#^qz2qv-nk)%7(clr07#!s5'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['toniiglesiasc.pythonanywhere.com']
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / "media"
@@ -123,7 +123,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'duofitapp/static')]
+STATICFILES_DIRS = ['/home/toniiglesiasc/DuoFit/duofit/duofitapp/static']
+STATIC_ROOT = '/home/toniiglesiasc/DuoFit/duofit/duofitapp/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
