@@ -3,11 +3,12 @@ from datetime import datetime
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib import messages
+import requests
 
 from .models import ExerciceConfig, ExerciceLog
 from django.utils import timezone
 from .forms import ExerciceConfigForm
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 
 
@@ -59,6 +60,11 @@ def signup_view(request):
 
     return render(request, 'signup.html', {'form': form})
 
+
+def logout_user(request):
+    logout(request)
+    return redirect('index')
+
 # Create your views here.
 
 def settings_view(request):
@@ -82,9 +88,12 @@ def log_training(request):
 
         # Registra un nuevo entrenamiento en la fecha actual
         if exercice_config:
-            ExerciceLog.objects.create(user=user, date=timezone.now())
-            ExerciceConfig.objects.get(id_user=user.id).add_streak()
-            #ExerciceConfig.objects.get(id_user=user.id).log_training_date()
+            new_training = ExerciceLog.objects.create(user=user, date=timezone.now())
+            exercice_config_instance = ExerciceConfig.objects.get(id_user=user.id)
+            exercice_config_instance.add_streak()
+
+            # Call the Notion API function
+            #notion_api_integration(new_training)
 
         return redirect('index')  # Redirige de nuevo a la página principal
 
@@ -104,3 +113,43 @@ def refresh_streak(user_id):
             exercice_config.streak += 1
             exercice_config.last_training_date = timezone.now()
             exercice_config.save()
+
+
+def notion_api_integration(new_training):
+    # Your Notion API integration
+    notion_integration_token = 'secret_mpETsJupCH7hksg6Iq5i0IiRAhEWchet26eB36ypqmK'
+    headers = {
+        'Authorization': f'Bearer {notion_integration_token}',
+        'Content-Type': 'application/json',
+        'Notion-Version': '2022-06-28',  # Set the Notion-Version header to the latest version
+    }
+
+    notion_api_url = 'https://api.notion.com/v1/pages'
+
+    current_date_str = str(timezone.now().date())
+
+    # Data to be sent to Notion API to create a new row
+    new_training_data = {
+        'parent': {
+            'database_id': '0d10e31329694a2db4a2a390713af72b',
+        },
+        'properties': {
+            'Descripción': {
+                'title': [{'text': {'content': f'Training {new_training.id}'}}],
+            },
+            'Fecha': {
+                'date': {'start': current_date_str},
+            }
+        }
+    }
+
+    # Make a POST request to the Notion API
+    response = requests.post(notion_api_url, headers=headers, json=new_training_data)
+
+    # Check if the request was successful (status code 200)
+    if response.status_code == 200:
+        # Optionally, handle the Notion API response
+        notion_response_data = response.json()
+        print("Notion API Response:", notion_response_data)
+    else:
+        print(response.text)

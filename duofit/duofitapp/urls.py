@@ -7,12 +7,14 @@ from .views import (
     signup_view,
     settings_view,
     log_training,
+    logout_user,
 )
 
 urlpatterns = [
     path('', index, name='index'),
     path('login/', login_view, name="login"),
     path('signup/', signup_view, name="signup"),
+    path('logout/', logout_user, name="logout"),
     path('settings/', settings_view, name="settings"),
     path('log_training/', log_training, name='log_training'),
 ]
