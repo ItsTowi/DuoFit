@@ -25,7 +25,7 @@
 
             <!-- Columna derecha -->
             <div class="col-4 text-right">
-                <button class="btn btn-link btn-sm custom-link" data-toggle="modal" data-target="#configModal">
+                <button class="btn btn-link btn-sm custom-link" id="configButton" data-toggle="modal" data-target="#configModal">
                     Configuración
                 </button>
             </div>
@@ -37,6 +37,7 @@
 
     <!-- Script personalizado -->
     <script src="{% static 'logout.js' %}"></script>
+    <script src="{% static 'navbar_functions.js'%}"></script>
 
     <!-- Estilos personalizados -->
     <style>

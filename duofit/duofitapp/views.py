@@ -81,6 +81,10 @@ def settings_view(request):
     return render(request, 'settings.html', {'form': form})
 
 
+def editconfig_view(request):
+    return HttpResponse('editconfig')
+
+
 def log_training(request):
     if request.method == 'POST':
         user = request.user
