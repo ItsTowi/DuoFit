@@ -108,7 +108,7 @@ def log_training(request):
             exercice_config_instance.add_streak()
 
             # Call the Notion API function
-            #notion_api_integration(new_training)
+            notion_api_integration(new_training)
 
         return redirect('index')  # Redirige de nuevo a la página principal
 
