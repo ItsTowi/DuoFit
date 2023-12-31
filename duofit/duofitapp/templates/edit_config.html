@@ -1,0 +1,27 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- Enlaces para Bootstrap CSS -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+            integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
+            crossorigin="anonymous">
+
+        <!-- Add viewport meta tag for responsive design -->
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    </head>
+
+    <body class="d-flex align-items-center justify-content-center vh-100">
+        <div class="container">
+            <div class="card p-4">
+                <h2 class="card-title text-center mb-4">Edit Configuration</h2>
+                <form method="post" action="{% url 'editconfig' %}" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-primary d-block mx-auto mt-3">Save Changes</button>
+                </form>
+            </div>
+        </div>
+        {% include 'navbar_bottom.html' %}
+    </body>
+</html>

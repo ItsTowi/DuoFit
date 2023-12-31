@@ -82,7 +82,18 @@ def settings_view(request):
 
 
 def editconfig_view(request):
-    return HttpResponse('editconfig')
+    existing_config = ExerciceConfig.objects.filter(id_user=request.user).first()
+
+    if request.method == 'POST':
+        form = ExerciceConfigForm(request.POST, instance=existing_config)
+        if form.is_valid():
+            form.save()
+            return redirect('index')
+    else:
+        form = ExerciceConfigForm(instance=existing_config)
+
+    return render(request, 'edit_config.html', {'form': form})
+
 
 
 def log_training(request):
