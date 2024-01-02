@@ -3,6 +3,7 @@ from datetime import datetime
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib import messages
+from duofit.settings import env
 import requests
 
 from .models import ExerciceConfig, ExerciceLog
@@ -132,7 +133,7 @@ def refresh_streak(user_id):
 
 def notion_api_integration(new_training):
     # Your Notion API integration
-    notion_integration_token = 'secret_mpETsJupCH7hksg6Iq5i0IiRAhEWchet26eB36ypqmK'
+    notion_integration_token = env('NOTION_SECRET_KEY')
     headers = {
         'Authorization': f'Bearer {notion_integration_token}',
         'Content-Type': 'application/json',
