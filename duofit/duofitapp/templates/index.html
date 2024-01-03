@@ -14,11 +14,12 @@
         <p class="lead">Has completado {{ weekly_completed_trainings }}/{{ exercice_config.weekly_goal }} esta semana</p>
         <p class="lead">Llevas {{ today_completed_trainings }}/{{ today_goal }} entrenamientos hoy.</p>
 
-        <form method="post" action="{% url 'log_training' %}" class="mb-4">
+        <form id="logTrainingForm" method="post" action="{% url 'log_training' %}" class="mb-4">
             {% csrf_token %}
-            <button type="submit" class="btn btn-danger btn-lg rounded-circle">+</button>
+            {% for category in exercice_config.get_categories %}
+                <button type="button" class="btn btn-danger btn-lg rounded-circle" onclick="submitForm('{{ category }}')">{{ category }}</button>
+            {% endfor %}
         </form>
-
         <p class="lead">Streak: {{ exercice_config.streak }}</p>
     </div>
 
@@ -26,6 +27,7 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="{% static 'index.js'%}"></script>
 
     {% include 'navbar_bottom.html' %}
 </body>

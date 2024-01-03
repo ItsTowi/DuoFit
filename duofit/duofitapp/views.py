@@ -100,6 +100,8 @@ def editconfig_view(request):
 def log_training(request):
     if request.method == 'POST':
         user = request.user
+        selected_category = request.POST.get('selected_category')
+        print(selected_category)
         exercice_config = ExerciceConfig.objects.filter(id_user=user.id).exists()
 
         # Registra un nuevo entrenamiento en la fecha actual
@@ -109,7 +111,7 @@ def log_training(request):
             exercice_config_instance.add_streak()
 
             # Call the Notion API function
-            notion_api_integration(new_training)
+            notion_api_integration(new_training, selected_category)
 
         return redirect('index')  # Redirige de nuevo a la página principal
 
@@ -131,7 +133,7 @@ def refresh_streak(user_id):
             exercice_config.save()
 
 
-def notion_api_integration(new_training):
+def notion_api_integration(new_training, category):
     # Your Notion API integration
     notion_integration_token = env('NOTION_SECRET_KEY')
     headers = {
@@ -155,6 +157,9 @@ def notion_api_integration(new_training):
             },
             'Fecha': {
                 'date': {'start': current_date_str},
+            },
+            'Categoria': {
+                'select': {'name': category}
             }
         }
     }

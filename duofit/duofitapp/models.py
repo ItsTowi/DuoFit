@@ -18,10 +18,14 @@ class ExerciceConfig(models.Model):
     weekly_goal = models.IntegerField()
     streak = models.IntegerField(default=0)
     last_training_date = models.DateTimeField(null=True, blank=True)
+    categories = models.CharField(max_length=255, blank=True)
 
     def save(self, *args, **kwargs):
         self.weekly_goal = sum([getattr(self, f"{day}_goal", 0) for day in ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]])
         super().save(*args, **kwargs)
+
+    def get_categories(self):
+        return [category.strip() for category in self.categories.split(',') if category]
 
     def get_today_goal(self):
         today = datetime.now().date()
