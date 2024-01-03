@@ -16,9 +16,12 @@
 
         <form id="logTrainingForm" method="post" action="{% url 'log_training' %}" class="mb-4">
             {% csrf_token %}
-            {% for category in exercice_config.get_categories %}
-                <button type="button" class="btn btn-danger btn-lg rounded-circle" onclick="submitForm('{{ category }}')">{{ category }}</button>
-            {% endfor %}
+            <div class="btn-group">
+                {% for category in exercice_config.get_categories %}
+                    <button type="button" class="btn btn-danger btn-lg rounded mx-1 btn-sm d-md-none d-block" onclick="submitForm('{{ category }}')">{{ category }}</button>
+                    <button type="button" class="btn btn-danger btn-lg rounded mx-1 d-none d-md-block" onclick="submitForm('{{ category }}')">{{ category }}</button>
+                {% endfor %}
+            </div>
         </form>
         <p class="lead">Streak: {{ exercice_config.streak }}</p>
     </div>
