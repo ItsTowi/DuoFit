@@ -14,6 +14,7 @@
         <p class="lead">Has completado {{ weekly_completed_trainings }}/{{ exercice_config.weekly_goal }} esta semana</p>
         <p class="lead">Llevas {{ today_completed_trainings }}/{{ today_goal }} entrenamientos hoy.</p>
 
+        <!-- Formulario para registrar el entrenamiento -->
         <form id="logTrainingForm" method="post" action="{% url 'log_training' %}" class="mb-4">
             {% csrf_token %}
             <div class="btn-group">
@@ -26,11 +27,35 @@
         <p class="lead">Streak: {{ exercice_config.streak }}</p>
     </div>
 
+    <!-- Modal para ingresar descripción -->
+    <div class="modal fade" id="descriptionModal" tabindex="-1" role="dialog" aria-labelledby="descriptionModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="descriptionModalLabel">Añadir Descripción</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="descriptionInput">Descripción (opcional)</label>
+                        <textarea class="form-control" id="descriptionInput" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="confirmSubmit">Enviar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Incluir Bootstrap JS y Popper.js si es necesario -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    <script src="{% static 'index.js'%}"></script>
+    <script src="{% static 'index.js' %}"></script>
 
     {% include 'navbar_bottom.html' %}
 </body>
