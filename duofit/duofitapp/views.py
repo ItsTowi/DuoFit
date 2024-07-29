@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib import messages
 from duofit.settings import env
 import requests
+from datetime import datetime, timedelta
 
 from .models import ExerciceConfig, ExerciceLog
 from django.utils import timezone
@@ -118,6 +119,22 @@ def log_training(request):
 
     return redirect('index')
 
+def statistics_view(request):
+    user = request.user
+    exercice_config = ExerciceConfig.objects.get(id_user=user)
+
+    # Obtener todas las fechas de entrenamiento para el usuario
+    training_dates = ExerciceLog.objects.filter(
+        user=user,
+    ).values_list('date', flat=True)
+    
+    # Convertir las fechas a formato de cadena
+    training_dates_str = [date.strftime('%Y-%m-%d') for date in training_dates]
+
+    return render(request, 'statistics.html', {
+        'streak': exercice_config.streak,
+        'training_dates': training_dates_str
+    })
 
 #Utility functions
 
@@ -214,3 +231,4 @@ def read_latest_notion_row(database_id, notion_integration_token):
     else:
         print(f"Error: {response.status_code} - {response.text}")
         return None
+

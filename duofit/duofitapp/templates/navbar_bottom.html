@@ -11,16 +11,16 @@
         <div class="container">
             <!-- Columna izquierda -->
             <div class="col-4 text-left">
-                <button class="btn btn-link btn-sm custom-link" id="logoutButton" data-toggle="modal" data-target="#logoutModal">
+                <a class="btn btn-link btn-sm custom-link" id="logoutButton" href="{% url 'logout' %}">
                     Cerrar sesión
-                </button>
+                </a>
             </div>
 
             <!-- Columna centro -->
             <div class="col-4 text-center">
-                <button class="btn btn-link btn-sm custom-link" data-toggle="modal" data-target="#addTrainingModal">
+                <a class="btn btn-link btn-sm custom-link" href="{% url 'statistics' %}">
                     Estadísticas
-                </button>
+                </a>
             </div>
 
             <!-- Columna derecha -->
