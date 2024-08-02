@@ -11,7 +11,11 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 import os
+import environ
 from pathlib import Path
+
+env = environ.Env()
+environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,7 +28,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-dqh(o+!^_!a9cf3h&1etzik!2k$#^qz2qv-nk)%7(clr07#!s5'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['toniiglesiasc.pythonanywhere.com']
 
@@ -123,8 +127,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = ['/home/toniiglesiasc/DuoFit/duofit/duofitapp/static']
-STATIC_ROOT = '/home/toniiglesiasc/DuoFit/duofit/duofitapp/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'duofitapp/static')]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

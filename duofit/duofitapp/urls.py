@@ -9,6 +9,7 @@ from .views import (
     log_training,
     logout_user,
     editconfig_view,
+    statistics_view
 )
 
 urlpatterns = [
@@ -19,7 +20,8 @@ urlpatterns = [
     path('settings/', settings_view, name="settings"),
     path('editconfig/', editconfig_view, name="editconfig"),
     path('log_training/', log_training, name='log_training'),
+    path('statistics/', statistics_view, name='statistics')
 ]
 
-#if settings.DEBUG:
-#    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

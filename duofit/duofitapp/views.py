@@ -1,10 +1,11 @@
 from datetime import datetime
-import os
 
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib import messages
+from duofit.settings import env
 import requests
+from datetime import datetime, timedelta
 
 from .models import ExerciceConfig, ExerciceLog
 from django.utils import timezone
@@ -35,7 +36,7 @@ def index(request):
         'weekly_completed_trainings': exercice_config.get_weekly_trainings(),
     })
 
-
+    
 def login_view(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, request.POST)
@@ -100,6 +101,9 @@ def editconfig_view(request):
 def log_training(request):
     if request.method == 'POST':
         user = request.user
+        selected_category = request.POST.get('selected_category')
+        description = request.POST.get('description', '')  # Descripción opcional
+
         exercice_config = ExerciceConfig.objects.filter(id_user=user.id).exists()
 
         # Registra un nuevo entrenamiento en la fecha actual
@@ -108,13 +112,29 @@ def log_training(request):
             exercice_config_instance = ExerciceConfig.objects.get(id_user=user.id)
             exercice_config_instance.add_streak()
 
-            # Call the Notion API function
-            notion_api_integration(new_training)
+            # Llamar a la función de integración con la API de Notion
+            notion_api_integration(new_training, selected_category, description)
 
         return redirect('index')  # Redirige de nuevo a la página principal
 
     return redirect('index')
 
+def statistics_view(request):
+    user = request.user
+    exercice_config = ExerciceConfig.objects.get(id_user=user)
+
+    # Obtener todas las fechas de entrenamiento para el usuario
+    training_dates = ExerciceLog.objects.filter(
+        user=user,
+    ).values_list('date', flat=True)
+    
+    # Convertir las fechas a formato de cadena
+    training_dates_str = [date.strftime('%Y-%m-%d') for date in training_dates]
+
+    return render(request, 'statistics.html', {
+        'streak': exercice_config.streak,
+        'training_dates': training_dates_str
+    })
 
 #Utility functions
 
@@ -131,42 +151,84 @@ def refresh_streak(user_id):
             exercice_config.save()
 
 
-def notion_api_integration(new_training):
-    # Your Notion API integration
-    #notion_integration_token = os.environ.get('NOTION_INTEGRATION_TOKEN')
-    notion_integration_token = 'secret_mpETsJupCH7hksg6Iq5i0IiRAhEWchet26eB36ypqmK'
+def notion_api_integration(new_training, category, description):
+    # Integración con la API de Notion
+    database_id = '0d10e31329694a2db4a2a390713af72b'
+    notion_integration_token = env('NOTION_SECRET_KEY')
     headers = {
         'Authorization': f'Bearer {notion_integration_token}',
         'Content-Type': 'application/json',
-        'Notion-Version': '2022-06-28',  # Set the Notion-Version header to the latest version
+        'Notion-Version': '2022-06-28',  # Versión de la API de Notion
     }
 
     notion_api_url = 'https://api.notion.com/v1/pages'
 
     current_date_str = str(timezone.now().date())
+    latest_row = read_latest_notion_row(database_id, notion_integration_token)
 
-    # Data to be sent to Notion API to create a new row
+    if latest_row:
+        training_number = latest_row['properties']['Descripción']['title'][0]['text']['content'].split()[-1]
+        training_number = int(training_number) + 1
+    else:
+        training_number = 1
+
+    # Datos para enviar a la API de Notion
     new_training_data = {
         'parent': {
-            'database_id': '0d10e31329694a2db4a2a390713af72b',
+            'database_id': database_id,
         },
         'properties': {
             'Descripción': {
-                'title': [{'text': {'content': f'Training {new_training.id}'}}],
+                'title': [{'text': {'content': f'Training {training_number}'}}],
             },
             'Fecha': {
                 'date': {'start': current_date_str},
+            },
+            'Categoria': {
+                'select': {'name': category}
+            },
+            'Comentarios': {
+                'rich_text': [{'text': {'content': description}}]
             }
         }
     }
 
-    # Make a POST request to the Notion API
+    # Realizar la solicitud POST a la API de Notion
     response = requests.post(notion_api_url, headers=headers, json=new_training_data)
 
-    # Check if the request was successful (status code 200)
+    # Comprobar si la solicitud fue exitosa (código de estado 200)
     if response.status_code == 200:
-        # Optionally, handle the Notion API response
+        # Opcionalmente, maneja la respuesta de la API de Notion
         notion_response_data = response.json()
         print("Notion API Response:", notion_response_data)
     else:
         print(response.text)
+
+
+def read_latest_notion_row(database_id, notion_integration_token):
+    headers = {
+        'Authorization': f'Bearer {notion_integration_token}',
+        'Content-Type': 'application/json',
+        'Notion-Version': '2022-06-28',
+    }
+
+    notion_api_url = f'https://api.notion.com/v1/databases/{database_id}/query'
+
+    # Configura la consulta para ordenar por fecha en orden descendente
+    query_params = {
+        'sorts': [{'property': 'Fecha', 'direction': 'descending'}],
+    }
+
+    # Realiza la solicitud POST a la API de Notion con los parámetros de consulta
+    response = requests.post(notion_api_url, headers=headers, json=query_params)
+
+    if response.status_code == 200:
+        data = response.json()
+        # Obtén la primera fila (la más nueva) si hay resultados
+        if data.get('results'):
+            latest_row = data['results'][0]
+            return latest_row
+    else:
+        print(f"Error: {response.status_code} - {response.text}")
+        return None
+
