@@ -42,4 +42,4 @@ document.getElementById('confirmSubmit').addEventListener('click', function() {
 
     // Enviar el formulario
     form.submit();
-}
+});
