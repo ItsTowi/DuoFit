@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -61,67 +60,3 @@
     {% include 'navbar_bottom.html' %}
 </body>
 </html>
-=======
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap">
-    <link rel="stylesheet" href="{% static 'index_styles.css' %}">
-    <!-- Incluir Bootstrap -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-</head>
-<body class="d-flex align-items-center justify-content-center vh-100 text-center">
-    <div class="container">
-        <h2 class="display-4">Duofit</h2>
-        <p class="lead">Has completado {{ weekly_completed_trainings }}/{{ exercice_config.weekly_goal }} esta semana</p>
-        <p class="lead">Llevas {{ today_completed_trainings }}/{{ today_goal }} entrenamientos hoy.</p>
-
-        <!-- Formulario para registrar el entrenamiento -->
-        <form id="logTrainingForm" method="post" action="{% url 'log_training' %}" class="mb-4">
-            {% csrf_token %}
-            <div class="btn-group">
-                {% for category in exercice_config.get_categories %}
-                    <button type="button" class="btn btn-danger btn-lg rounded mx-1 btn-sm d-md-none d-block" onclick="submitForm('{{ category }}')">{{ category }}</button>
-                    <button type="button" class="btn btn-danger btn-lg rounded mx-1 d-none d-md-block" onclick="submitForm('{{ category }}')">{{ category }}</button>
-                {% endfor %}
-            </div>
-        </form>
-        <p class="lead">Streak: {{ exercice_config.streak }}</p>
-    </div>
-
-    <!-- Modal para ingresar descripción -->
-    <div class="modal fade" id="descriptionModal" tabindex="-1" role="dialog" aria-labelledby="descriptionModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="descriptionModalLabel">Añadir Descripción</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="descriptionInput">Descripción (opcional)</label>
-                        <textarea class="form-control" id="descriptionInput" rows="3"></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" id="confirmSubmit">Enviar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Incluir Bootstrap JS y Popper.js si es necesario -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    <script src="{% static 'index.js' %}"></script>
-
-    {% include 'navbar_bottom.html' %}
-</body>
-</html>
->>>>>>> d77da84d47139c0f069eb156bd042e60b9e7d816
